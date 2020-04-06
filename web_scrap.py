@@ -1,7 +1,11 @@
 from itertools import cycle
 from bs4 import BeautifulSoup
 import requests
+import grequests
 import logging
+import random
+import sys
+from fake_useragent import UserAgent, FakeUserAgentError
 
 # Narrowing down the space to the article in the page
 #(since there are many other irrelevant elements in the page)
