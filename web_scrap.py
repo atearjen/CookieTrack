@@ -18,7 +18,7 @@ def main():
     urls = ["www.aaronistheman.github.io/#/home"] # all links to scrape
 
 # Create pools of proxies and headers and get the first ones
-    proxies_pool, headers_pool = create_pools()
+    proxy_pool, headers_pool = create_pools()
     current_proxy = next(proxy_pool)
     current_headers = next(headers_pool)
 
@@ -31,19 +31,6 @@ def main():
     soups = [BeautifulSoup(pages[ind].content, 'html.parser') if
          pages[ind].status_code == 200 else "problem" for ind in range(len(pages))]
 
-
-
-# Generate the pools
-def create_pools():
-    proxies = proxies_pool()
-    logger = Logger().logger
-    headers = [random_header(logger) for ind in range(len(proxies))] # list of headers, same length as the proxies list
-
-    # This transforms the list into itertools.cycle object (an iterator) that we can run
-    # through using the next() function in lines 16-17.
-    proxies_pool = cycle(proxies)
-    headers_pool = cycle(headers)
-    return proxies_pool, headers_pool
 
 def proxies_pool():
     url = 'https://www.sslproxies.org/'
@@ -62,7 +49,17 @@ def proxies_pool():
         proxies.append('{}:{}'.format(row.find_all('td')[0].string, row.find_all('td')[1].string))
     return proxies
 
+# Generate the pools
+def create_pools():
+    proxies = proxies_pool()
+    logger = Logger().logger
+    headers = [random_header(logger) for ind in range(len(proxies))] # list of headers, same length as the proxies list
 
+    # This transforms the list into itertools.cycle object (an iterator) that we can run
+    # through using the next() function in lines 16-17.
+    proxy_pool = cycle(proxies)
+    headers_pool = cycle(headers)
+    return proxy_pool, headers_pool
 
 def random_header(logger):
     # Create a dict of accept headers for each user-agent.
